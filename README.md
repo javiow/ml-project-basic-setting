@@ -2,6 +2,17 @@
 - __W&B(Experiment managing & Hyper Parameter Tuning)__
 - __WIT(Model Analysis)__
 - __Kubeflow(ML Pipeline)__
+    - __How to use kubeflow pipeline on my project__  
+    → There are 4 components in this pipeline (data extracting-preprocessing-training-predicting)  
+    → __Every components should be uploaded with docker image__    
+    → In Shell    
+    → ``` cd kubeflow/{component} ```  
+    → ``` docker build -t myname/{component} . ```  
+    → ``` docker login ```
+    → ``` docker push myname/{component} ```  
+    → ``` cd .. ```  
+    → ``` python pipeline.py ``` after all of components uploading  
+    → There is a __service which sends email that has an error__
 - __CodeClimate(Code Quality Management & Continuous Integration)__
     - __How to apply codeclimate's service on my project__  
     → [CodeClimate](https://codeclimate.com/)  

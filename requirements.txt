@@ -10,3 +10,4 @@ tensorflow
 xgboost
 lightgbm
 sklearn
+kfp

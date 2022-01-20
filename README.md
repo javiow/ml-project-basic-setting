@@ -7,9 +7,9 @@
     → __Every components should be uploaded with docker image__    
     → In Shell    
     → ``` cd kubeflow/{component} ```  
-    → ``` docker build -t myname/{component} . ```  
-    → ``` docker login ```
-    → ``` docker push myname/{component} ```  
+    → ``` docker build -t myname/{component_tag_name} . ```  
+    → ``` docker login ```  
+    → ``` docker push myname/{component_tag_name} ```  
     → ``` cd .. ```  
     → ``` python pipeline.py ``` after all of components uploading  
     → There is a __service which sends email that has an error__

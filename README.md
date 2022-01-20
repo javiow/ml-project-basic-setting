@@ -1,8 +1,8 @@
 # My Basic ML Project Environment Settings  
-- W&B(Experiment managing & Hyper Parameter Tuning)
-- WIT(Model Analysis)
-- Kubeflow(ML Pipeline)
-- CodeClimate(Code Quality Management & Continuous Integration)
+- __W&B(Experiment managing & Hyper Parameter Tuning)__
+- __WIT(Model Analysis)__
+- __Kubeflow(ML Pipeline)__
+- __CodeClimate(Code Quality Management & Continuous Integration)__
     - __How to apply codeclimate's service on my project__  
     → [CodeClimate](https://codeclimate.com/)  
     → Login  

@@ -4,14 +4,14 @@
 - __Kubeflow(ML Pipeline)__
     - __How to use kubeflow pipeline on my project__  
     → There are 4 components in this pipeline (data extracting-preprocessing-training-predicting)  
-    → __Every components should be uploaded with docker image__    
-    → In Shell    
-    → ``` cd kubeflow/{component} ```  
-    → ``` docker build -t myname/{component_tag_name} . ```  
-    → ``` docker login ```  
-    → ``` docker push myname/{component_tag_name} ```  
-    → ``` cd .. ```  
-    → ``` python pipeline.py ``` after all of components uploading  
+    → __Every components should be uploaded by docker image__    
+        - In Shell    
+        → ``` cd kubeflow/{component} ```  
+        → ``` docker build -t myname/{component_tag_name} . ```  
+        → ``` docker login ```  
+        → ``` docker push myname/{component_tag_name} ```  
+        → ``` cd .. ```  
+        → ``` python pipeline.py ``` after all of components uploading  
     → There is a __service which sends email that has an error__
 - __CodeClimate(Code Quality Management & Continuous Integration)__
     - __How to apply codeclimate's service on my project__  

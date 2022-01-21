@@ -18,7 +18,7 @@ REGION_NAME = 'myawsregionname'
 EMAIL_KEY = 'myemailkey'
 
 # ML파이프라인
-def kppsf_pipeline():
+def ml_pipeline():
 
     params = {'n_estimators':99999, 'learning_rate':0.01}
     model = 'xgboost'
@@ -131,7 +131,7 @@ if __name__ == '__main__':
 
     # 파이프라인 실행
     kfp.Client(host=KUBEFLOW_HOST).create_run_from_pipeline_func(
-        kppsf_pipeline,
+        ml_pipeline,
         arguments = {},
         experiment_name = EXPERIMENT_NAME
     )

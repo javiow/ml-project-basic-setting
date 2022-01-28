@@ -41,7 +41,7 @@ if __name__ == '__main__':
         s = smtplib.SMTP('smtp.gmail.com', 587)
 
         s.starttls()
-        s.login('my_email@gmail.com', args.email_key)
+        s.login('send_from@email.com', args.email_key)
 
         msg = MIMEText("""
             시각: {} 
@@ -49,5 +49,5 @@ if __name__ == '__main__':
         """.format(nowtime, str(error)))
         msg['Subject'] = 'BASIC-ML-PIPELINE: 모델 학습 및 저장 작업 중 에러가 발생했습니다.'
 
-        s.sendmail('my_email@gmail.com', msg.as_string())
+        s.sendmail('send_from@email.com', 'send_to@email', msg.as_string())
         s.quit()

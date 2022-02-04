@@ -60,6 +60,22 @@ def ml_pipeline():
         }
     )
 
+    # 데이터 검증 컴포넌트
+    data_validation = kfp.dsl.ContainerOp(
+        name = 'data validation',
+        image = 'my/data-validation:latest',
+        pvolumes = {'/mnt':vop.volume},
+        arguments = [
+            '--BUCKET_NAME', BUCKET_NAME,
+            '--ACCESSKEY', ACCESSKEY,
+            '--SECRETKEY', SECRETKEY,
+            '--REGION_NAME', REGION_NAME,
+            '--train_data_path', dsl.InputArgumentPath(data_extracting.outputs['train_data_output']),
+            '--test_data_path', dsl.InputArgumentPath(data_extracting.outputs['test_data_output']),
+            '--email_key', EMAIL_KEY,
+        ]
+    )
+
     # 데이터 전처리 컴포넌트
     preprocessing = kfp.dsl.ContainerOp(
         name = 'preprocessing data',
@@ -122,6 +138,7 @@ def ml_pipeline():
     )
 
     # 실행 관계 설정
+    data_validation.after(data_extracting)
     preprocessing.after(data_extracting)
     training.after(preprocessing)
     predicting.after(training)

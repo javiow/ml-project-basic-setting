@@ -39,7 +39,7 @@ if __name__ == '__main__':
 
     try:
 
-        nowtime = dt.datetime.now()
+        nowtime = dt.datetime.now() + dt.timedelta(hours=9)
         nowtime = str(nowtime).split()[0][5:7]
         model_name = args.model + '_' + nowtime
 
@@ -54,7 +54,7 @@ if __name__ == '__main__':
 
     except Exception as error:
 
-        nowtime = dt.datetime.now()
+        nowtime = dt.datetime.now() + dt.timedelta(hours=9)
 
         s = smtplib.SMTP('smtp.gmail.com', 587)
 

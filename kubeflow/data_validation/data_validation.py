@@ -11,7 +11,7 @@ import smtplib
 from email.mime.text import MIMEText
 from s3fs.core import S3FileSystem
 
-def get_schema(
+def get_stat(
     
     BUCKET_NAME:str, 
     ACCESSKEY:str, 
@@ -22,17 +22,17 @@ def get_schema(
     
     s3 = S3FileSystem(key=ACCESSKEY, secret=SECRETKEY)
     
-    train_schema_former = joblib.load(s3.open('{}/{}'.format(BUCKET_NAME, train_key)))
-    test_schema_former = joblib.load(s3.open('{}/{}'.format(BUCKET_NAME, test_key)))
+    train_stat_former = joblib.load(s3.open('{}/{}'.format(BUCKET_NAME, train_key)))
+    test_stat_former = joblib.load(s3.open('{}/{}'.format(BUCKET_NAME, test_key)))
     
-    print(train_schema_former)
-    print(test_schema_former)
+    print(train_stat_former)
+    print(test_stat_former)
     
-    return train_schema_former, test_schema_former
+    return train_stat_former, test_stat_former
 
-def data_validation(stat, schema):
+def data_validation(stat, schema, former_stat):
     
-    anomalies = tfdv.validate_statistics(statistics=stat, schema=schema)
+    anomalies = tfdv.validate_statistics(statistics=stat, schema=schema, previous_statistics=former_stat)
 
     if anomalies.anomaly_info == {}:
         pass
@@ -63,7 +63,7 @@ def data_validation(stat, schema):
         s.sendmail('send_from@email.com', 'send_to@email', msg.as_string())
         s.quit()
         
-def upload_schema(BUCKET_NAME, ACCESSKEY, SECRETKEY, REGION_NAME, data, save_key):
+def upload_stat(BUCKET_NAME, ACCESSKEY, SECRETKEY, REGION_NAME, data, save_key):
     
     s3 = boto3.client('s3',
         aws_access_key_id = ACCESSKEY,
@@ -91,7 +91,7 @@ if __name__ == '__main__':
 
     try:
 
-        train_schema_former, test_schema_former = get_schema(
+        train_stat_former, test_stat_former = get_stat(
             args.BUCKET_NAME, 
             args.ACCESSKEY, 
             args.SECRETKEY
@@ -100,31 +100,39 @@ if __name__ == '__main__':
         train_data = joblib.load(args.train_data_path)
         train_stat = tfdv.generate_statistics_from_dataframe(train_data)
         train_schema = tfdv.infer_schema(train_stat)
+        
+        # Numeric Column Example
+        tfdv.get_feature(train_schema, 'column').float_domain.name = 'column'
+        tfdv.get_feature(train_schema, 'column').float_domain.min = 0.0
+        tfdv.get_feature(train_schema, 'column').float_domain.max = 1.0
+        
+        # Categoric Column Example
+        tfdv.get_feature(train_schema, 'column').skew_comparator.infinity_norm.threshold = 0.001
 
         test_data = joblib.load(args.test_data_path)
         test_stat = tfdv.generate_statistics_from_dataframe(test_data)
         test_schema = tfdv.infer_schema(test_stat)
         
-        data_validation(stat=train_stat, schema=train_schema_former)
-        data_validation(stat=test_stat, schema=test_schema_former)
+        data_validation(stat=train_stat, schema=train_schema, former_sta=train_stat_former)
+        data_validation(stat=test_stat, schema=test_schema, former_stat=test_stat_former)
         
         nowtime = dt.datetime.now() + dt.timedelta(hours=9)
         nowtime = str(nowtime.year) + \
             (('0'+str(nowtime.month)) if nowtime.month < 10 else str(nowtime.month)) + \
             (('0'+str(nowtime.day)) if nowtime.day < 10 else str(nowtime.day))
         
-        upload_schema(args.BUCKET_NAME, 
+        upload_stat(args.BUCKET_NAME, 
                       args.ACCESSKEY, 
                       args.SECRETKEY, 
                       args.REGION_NAME, 
-                      data=train_schema, 
+                      data=train_stat, 
                       save_key="save_key")
         
-        upload_schema(args.BUCKET_NAME, 
+        upload_stat(args.BUCKET_NAME, 
                       args.ACCESSKEY, 
                       args.SECRETKEY, 
                       args.REGION_NAME, 
-                      data=test_schema, 
+                      data=test_stat, 
                       save_key="save_key")
             
 
